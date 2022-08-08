@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -6,11 +9,11 @@ using (var context = new CustomerContext())
 {
     context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
-    
+
     context.AddRange(
-        new Customer {Name = "Alice", PhoneNumber = "+1 515 555 0123"},
-        new Customer {Name = "Mac", PhoneNumber = "+1 515 555 0124"});
-    
+        new Customer { Name = "Alice", PhoneNumber = "+1 515 555 0123" },
+        new Customer { Name = "Mac", PhoneNumber = "+1 515 555 0124" });
+
     context.SaveChanges();
 }
 
@@ -23,10 +26,11 @@ using (var context = new CustomerContext())
 public class CustomerContext : DbContext
 {
     private static readonly SetRetrievedInterceptor _setRetrievedInterceptor = new();
-    
-    public DbSet<Customer> Customers => Set<Customer>();
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
+    public DbSet<Customer> Customers
+        => Set<Customer>();
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
             .AddInterceptors(_setRetrievedInterceptor)
             .UseSqlite("Data Source = customers.db");
@@ -40,7 +44,7 @@ public class SetRetrievedInterceptor : IMaterializationInterceptor
         {
             hasRetrieved.Retrieved = DateTime.UtcNow;
         }
-        
+
         return instance;
     }
 }

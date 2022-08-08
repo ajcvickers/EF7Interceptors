@@ -1,4 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -10,10 +13,20 @@ using (var context = new CustomerContext())
     context.Database.EnsureCreated();
 
     context.AddRange(
-        new Customer {Name = "Alice", PhoneNumber = "+1 515 555 0123", City = "Ames"},
-        new Customer {Name = "Mac", PhoneNumber = "+1 515 555 0124", City = "Ames"},
-        new Customer {Name = "Toast"},
-        new Customer {Name = "Baxter"});
+        new Customer
+        {
+            Name = "Alice",
+            PhoneNumber = "+1 515 555 0123",
+            City = "Ames"
+        },
+        new Customer
+        {
+            Name = "Mac",
+            PhoneNumber = "+1 515 555 0124",
+            City = "Ames"
+        },
+        new Customer { Name = "Toast" },
+        new Customer { Name = "Baxter" });
 
     context.SaveChanges();
 }
@@ -26,7 +39,7 @@ foreach (var customer in GetPageOfCustomers("City", 0))
 List<Customer> GetPageOfCustomers(string sortProperty, int page)
 {
     using var context = new CustomerContext();
-    
+
     return context.Customers
         .OrderBy(e => EF.Property<object>(e, sortProperty))
         .Skip(page * 20).Take(20).ToList();
@@ -40,7 +53,7 @@ foreach (var customer in GetPageOfCustomers2("City", 0))
 List<Customer> GetPageOfCustomers2(string sortProperty, int page)
 {
     using var context = new CustomerContext();
-    
+
     return context.Customers
         .OrderBy(e => EF.Property<object>(e, sortProperty))
         .ThenBy(e => e.Id)
@@ -51,7 +64,8 @@ public class CustomerContext : DbContext
 {
     private static readonly KeyOrderingExpressionInterceptor _keyOrderingExpressionInterceptor = new();
 
-    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Customer> Customers
+        => Set<Customer>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
@@ -70,7 +84,7 @@ public class KeyOrderingExpressionInterceptor : IQueryExpressionInterceptor
         private static readonly MethodInfo ThenByMethod
             = typeof(Queryable).GetMethods()
                 .Single(m => m.Name == nameof(Queryable.ThenBy) && m.GetParameters().Length == 2);
-        
+
         protected override Expression VisitMethodCall(MethodCallExpression? methodCallExpression)
         {
             var methodInfo = methodCallExpression!.Method;
@@ -95,7 +109,7 @@ public class KeyOrderingExpressionInterceptor : IQueryExpressionInterceptor
                             entityParameterExpression));
                 }
             }
-            
+
             return base.VisitMethodCall(methodCallExpression);
         }
     }

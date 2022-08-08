@@ -1,5 +1,6 @@
-﻿using System.Linq.Expressions;
-using System.Reflection;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -10,8 +11,8 @@ using (var context = new CustomerContext())
     context.Database.EnsureCreated();
 
     context.AddRange(
-        new Customer {Name = "Bill"},
-        new Customer {Name = "Bob"});
+        new Customer { Name = "Bill" },
+        new Customer { Name = "Bob" });
 
     context.SaveChanges();
 }
@@ -26,7 +27,7 @@ using (var context1 = new CustomerContext())
         context2.Entry(customer2).State = EntityState.Deleted;
         context2.SaveChanges();
     }
-    
+
     context1.Entry(customer1).State = EntityState.Deleted;
     context1.SaveChanges();
 }
@@ -35,7 +36,8 @@ public class CustomerContext : DbContext
 {
     private static readonly SuppressDeleteConcurrencyInterceptor _concurrencyInterceptor = new();
 
-    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Customer> Customers
+        => Set<Customer>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
@@ -53,11 +55,11 @@ public class SuppressDeleteConcurrencyInterceptor : ISaveChangesInterceptor
         if (eventData.Entries.All(e => e.State == EntityState.Deleted))
         {
             Console.WriteLine("Suppressing Concurrency violation for command:");
-            Console.WriteLine(((RelationalConcurrencyExceptionEventData) eventData).Command.CommandText);
+            Console.WriteLine(((RelationalConcurrencyExceptionEventData)eventData).Command.CommandText);
 
             return InterceptionResult.Suppress();
         }
-        
+
         return result;
     }
 
@@ -67,7 +69,6 @@ public class SuppressDeleteConcurrencyInterceptor : ISaveChangesInterceptor
         CancellationToken cancellationToken = default)
         => new(ThrowingConcurrencyException(eventData, result));
 }
-
 
 public class Customer
 {

@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryInterception", "QueryI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OptimisticConcurrencyInterception", "OptimisticConcurrencyInterception\OptimisticConcurrencyInterception.csproj", "{F735D848-36F1-4616-93F2-82215E52B6F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InjectLogger", "InjectLogger\InjectLogger.csproj", "{21750053-0FB0-47A6-9C59-ECD4B0A65F01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityCaching", "EntityCaching\EntityCaching.csproj", "{22FBD327-ECCA-4EFE-85B7-B155EB6A0E72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{F735D848-36F1-4616-93F2-82215E52B6F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F735D848-36F1-4616-93F2-82215E52B6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F735D848-36F1-4616-93F2-82215E52B6F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21750053-0FB0-47A6-9C59-ECD4B0A65F01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21750053-0FB0-47A6-9C59-ECD4B0A65F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21750053-0FB0-47A6-9C59-ECD4B0A65F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21750053-0FB0-47A6-9C59-ECD4B0A65F01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22FBD327-ECCA-4EFE-85B7-B155EB6A0E72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22FBD327-ECCA-4EFE-85B7-B155EB6A0E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22FBD327-ECCA-4EFE-85B7-B155EB6A0E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22FBD327-ECCA-4EFE-85B7-B155EB6A0E72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

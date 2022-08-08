@@ -1,20 +1,30 @@
-﻿using System.Collections.Concurrent;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Query;
 
 using (var context = new CustomerContext())
 {
     context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
-    
+
     context.AddRange(
-        new Customer {Name = "Alice", PhoneNumber = "515 555 0123", Country = context.Countries.Find("United States")!},
-        new Customer {Name = "Mac", PhoneNumber = "515 555 0124", Country = context.Countries.Find("United Kingdom")!});
-    
+        new Customer
+        {
+            Name = "Alice",
+            PhoneNumber = "515 555 0123",
+            Country = context.Countries.Find("United States")!
+        },
+        new Customer
+        {
+            Name = "Mac",
+            PhoneNumber = "515 555 0124",
+            Country = context.Countries.Find("United Kingdom")!
+        });
+
     context.SaveChanges();
 }
 
@@ -30,8 +40,11 @@ public class CustomerContext : DbContext
 {
     private static readonly CountriesCachingInterceptor _countriesCachingInterceptor = new();
 
-    public DbSet<Customer> Customers => Set<Customer>();
-    public DbSet<Country> Countries => Set<Country>();
+    public DbSet<Customer> Customers
+        => Set<Customer>();
+
+    public DbSet<Country> Countries
+        => Set<Country>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
@@ -39,8 +52,7 @@ public class CustomerContext : DbContext
             .UseSqlite("Data Source = customers.db");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Country>().HasData(
+        => modelBuilder.Entity<Country>().HasData(
             new Country("Afghanistan", "+93"),
             new Country("Åland", "+358 18"),
             new Country("Albania", "+355"),
@@ -309,7 +321,6 @@ public class CustomerContext : DbContext
             new Country("Zambia", "+260"),
             new Country("Zanzibar", "+255 24"),
             new Country("Zimbabwe", "+263"));
-    }
 }
 
 public class Customer
@@ -317,7 +328,7 @@ public class Customer
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public string? PhoneNumber { get; set; }
-    public Country Country { get; set; }
+    public Country Country { get; set; } = null!;
 }
 
 public sealed class Country
@@ -330,15 +341,17 @@ public sealed class Country
 
     [Key]
     public string Name { get; private set; }
-    public string DialingCodes { get; private set; }
+
+    public string DialingCodes { get; }
 }
 
 public class CountriesCachingInterceptor : IMaterializationInterceptor
 {
     private static readonly ConcurrentDictionary<string, Country> ToppingsCache = new();
-    
+
     public InterceptionResult<object> CreatingInstance(
-        MaterializationInterceptionData materializationData, InterceptionResult<object> result)
+        MaterializationInterceptionData materializationData,
+        InterceptionResult<object> result)
     {
         if (materializationData.EntityType.ClrType == typeof(Country))
         {
@@ -352,15 +365,15 @@ public class CountriesCachingInterceptor : IMaterializationInterceptor
 
         return result;
     }
-    
+
     public object CreatedInstance(MaterializationInterceptionData materializationData, object instance)
     {
-        if (instance is Country country 
+        if (instance is Country country
             && ToppingsCache.TryAdd(country.Name, country))
         {
             Console.WriteLine($"Country '{country.Name}' added to cache.");
         }
-        
+
         return instance;
     }
 }
