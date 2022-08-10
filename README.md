@@ -4,7 +4,7 @@ Three EF Core interceptor examples from the .NET Blog, plus two more.
 
 ### EntityCaching
 
-Caches instances of read-only entities so the same instance is always used across different `DbContext` insatnces
+Caches instances of read-only entities so the same instance is always used across different `DbContext` instances
 
 ### InjectLogger
 
